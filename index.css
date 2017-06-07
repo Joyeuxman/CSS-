@@ -1,0 +1,163 @@
+/*
+    色彩模式 rgb、rgba、hsl、hsla
+    1.rgb
+    RGB色彩模式，也称为“红绿蓝”，是通过对红(R)、绿(G)、蓝(B)三个颜色通道的变化以及它们相互之间的叠加来得到各式各样的颜色的，
+    RGB即是代表红、绿、蓝三个通道的颜色。
+    2.rgba
+    R：红色值。正整数(0 - 255) | 百分数    rgba(255,0,0,1)
+    G：绿色值。正整数(0 - 255) | 百分数    rgba(0,255,0,1)
+    B：蓝色值。正整数(0 - 255) | 百分数    rgba(0,0,255,1)
+    A：透明度。取值0~1之间
+    3.hsl
+    H: 色相。  正整数(0-360)   360/0红、60黄、120绿、180青、240蓝、300洋红
+    S: 饱和度。百分数。 数值越大，颜色中的灰色越少，颜色越鲜艳，呈现一种从理性(灰度)到感性(纯色)的变化。
+    L: 亮度。  百分数。 数值越小，色彩越暗，越接近于黑色，数值越大，色彩越亮，越接近于白色
+    如果我们想把一个颜色变暗或者变量，我们只需要改变最后一个亮度参数就可以。
+    红：hsl(0,100%,50%); 黄：hsl(60,100%,50%);绿：hsl(120,100%,50%);
+    4.hsla
+    与hsl相比只是增加了一个透明度。
+*/
+
+
+html{
+    /*
+    font复合属性
+    font-size和font-family为必写属性
+    font-style font-variant font-weight font-size font-family line-height
+    font-style:normal | italic(斜体) | oblique(斜体) |inherit
+    font-variant:small-caps(小型大写字母)
+    */
+    font:26px '楷体';
+}
+
+/* 
+盒模型中，从里到外依次是，content-box、padding-box、border-box、margin-box、
+width、height规定content-box的宽高
+*/
+.lgh-box{
+    display: inline-block;
+    width:100px;
+    height:100px;
+    padding:0;
+    border:none;
+    margin:0;
+    background: white;
+}
+
+/*
+    父元素字体大小控制按钮的大小
+    1em父级元素字体大小 
+    1rem根元素html字体大小 
+    font-size:125%/1.25em 父级字体的1.25倍
+    box-shadow:水平阴影 竖直阴影 模糊度 阴影大小 阴影颜色 内部阴影(insert)
+    text-shadow:水平阴影 竖直阴影 模糊度 阴影颜色
+    技巧：
+    1. 当某些值相互依赖时，应该把它们的相互关系用代码表达出来。
+    如：line-height:1.5 表示font-size字号的1.5倍
+    2. 将半透明的黑色或白色叠加在主色调上，即可产生主色调的暗色变体或者亮色变体
+    如：#58a为主色调，linear-gradient(hsla(0,0%,100%,.2)的白色将产生主色调的亮色变体
+    rgba(0,0,0,.5)的半透明黑色将产生主色调的暗色变体
+
+*/
+.lgh-button{
+    padding:.3em .8em;
+    border:1px solid rgba(0,0,0,.1);
+    background:#58a linear-gradient(hsla(0,0%,100%,.2),transparent);
+    border-radius: .2em;
+    box-shadow: 0 .05em .25em rgba(0,0,0,.5);
+    color:white;
+    text-shadow:0 -.05em .05em rgba(0,0,0,.5);
+    font-size:1.25em;
+    line-height: 1.5;
+}
+.lgh-button.cancel{
+    background-color:#c00;
+}
+.lgh-button.ok{
+    background-color:#6b0;
+}
+/*
+伪元素形成的对话框上箭头
+inherit可以用在任何CSS属性中，而且它总是绑定到父元素的计算值(对于伪元素来说，则会取生成该伪元素的宿主元素)
+???右边框、下边框即使置0，仍然有不明线，很诡异?
+*/
+.lgh-callout{
+    position:relative;
+}
+.lgh-callout:before{
+    content:'';
+    position:absolute;
+    top:-.4em;
+    left:1em;
+    padding:.35em;
+    background:inherit;
+    border:inherit;
+    border-right: 0;
+    border-bottom: 0;
+    transform:rotate(45deg);
+}
+
+/*
+    CSS设计之相信你的眼睛，而不是数字
+    1.相同宽高的正方形和圆形相比，圆形总是相对小一点。
+    2.人的眼睛在看到一个完美垂直居中的物体时，会感觉它并不居中。
+    实际上，我们应该把这个物体从几何学的中心点再稍微向上挪一点，才能取得理想的视觉效果。
+    3.在给一个英文文本容器设置内边距时，若我们给容器四边指定相同的内边距，则实际效果看起来并不相等。
+    原因在于：字母的形状在两端都比较整齐，而顶部和底部则往往参差不齐，从而导致你的眼睛把这些参差不齐的空缺部分感知为多出来的内边距。
+    因此，如果我们希望四边的内边距看起来时基本一致的，就需要减少顶部和底部的内边距。
+*/
+.lgh-trust1{
+    position:relative;
+    display: inline-block;
+    width:150px;
+    height:300px;
+    background:hsl(60,100%,50%);
+}
+.lgh-trust1>div{
+    position:absolute;
+    top:50%;left:50%;
+    transform: translate(-50%,-50%);
+    width:50px;
+    height:50px;
+    background:hsl(0,0%,0%);
+}
+.lgh-trust2{
+    position:relative;
+    display: inline-block;
+    width:150px;
+    height:300px;
+    background:hsl(60,100%,50%);
+}
+.lgh-trust2>div{
+    position:absolute;
+    margin:auto;
+    top:-2px;right:0;bottom:0;left:0;
+    width:50px;
+    height:50px;
+    background:hsl(0,0%,0%);
+}
+.lgh-trust3{
+    display: inline-block;
+    width:100px;
+    height:100px;
+    background: hsl(180,100%,50%);
+}
+.lgh-trust4{
+    display: inline-block;
+    width:100px;
+    height:100px;
+    background: hsl(180,100%,50%);
+    border-radius: 50%;
+}
+.lgh-trust5{
+    position:relative;
+    top:-1em;
+    padding:1em;
+    background:#58a;
+}
+.lgh-trust6{
+    position:relative;
+    top:-1em;
+    padding:.8em 1em;
+    background:#58a;
+}
