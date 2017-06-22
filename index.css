@@ -30,20 +30,36 @@ html{
     font:26px '楷体';
 }
 
+hr{
+    /*
+    currentColor 当前标签所继承的文字颜色即color或者是该标签设置的标签的文字颜色
+    当color的值变化时，currentColor会跟着同步变化
+    */
+    background:currentColor;
+}
+
 /* 
 盒模型中，从里到外依次是，content-box、padding-box、border-box、margin-box、
 width、height规定content-box的宽高
 */
-.lgh-box{
+.lgh-box-200{
+    display: inline-block;
+    width:200px;
+    height:200px;
+}
+.lgh-box-100{
     display: inline-block;
     width:100px;
     height:100px;
-    padding:0;
-    border:none;
-    margin:0;
-    background: white;
 }
-
+.lgh-inline-block{
+    display: inline-block;
+}
+/*.lgh-box-300{
+    display: inline-block;
+    width:300px;
+    height:300px;
+}*/
 /*
     父元素字体大小控制按钮的大小
     1em父级元素字体大小 
@@ -161,3 +177,1116 @@ inherit可以用在任何CSS属性中，而且它总是绑定到父元素的计�
     padding:.8em 1em;
     background:#58a;
 }
+.lgh-background-border{
+    border:4px dashed black;
+    background:hsl(300,100%,50%);
+    color:white;
+}
+/*
+    背景边框的原理：一共有三层图层，从下往上依次是：父级元素背景层、子级元素背景层、子级元素边框层。
+    由于子级元素背景层默认裁剪方式为border-box(使得子级元素背景层含有边框部分),会阻挡父级元素背景层往子级元素边框层上渗透，
+    因此要将子级元素背景层的边框部分裁减掉。
+*/
+@keyframes animation-background{
+    to {background-position: 0 400px;}
+}
+.lgh-translucent-border{
+    position:relative;
+    top:120px;
+    background:linear-gradient(hsl(0,100%,50%) 25%,hsl(60,100%,50%) 0,hsl(60,100%,50%) 50%,hsl(120,100%,50%) 0,hsl(120,100%,50%) 75%,hsl(180,100%,50%) 0);
+    background-position:  0 0 ;
+    animation:animation-background 4s linear infinite;
+
+}
+.lgh-translucent-border>div{
+    position: absolute;
+    top:50%;left:50%;
+    border:10px solid hsla(0,0%,100%,.5);
+    background:white;
+    transform:translate(-50%,-50%);
+}
+/*
+    此处加上 !important 是因为上面选择器(.lgh-translucent-border>div)的权值比下面两个选择器(.fail/.success)的权值高
+    不然的话，background:white;这种写法会使background-clip的值为initial;
+*/
+.fail{
+    /*
+        background-clip 裁剪背景(background-color/background-image) 
+        border-box:将边框(不包括边框)以外的背景裁减掉
+        padding-box:将内边距(包括边框)以外的背景裁减掉
+    */
+    background-clip: border-box !important;
+}
+.success{
+    background-clip: padding-box !important;
+}
+/*
+    多重实线边框原理：box-shadow接受第四个参数————扩张半径，
+    一个正值的扩张半径加上两个为零的偏移量以及为零的模糊值，
+    得到的'投影'就像一道实线边框。
+    注意事项：
+    1.'投影'的多边框跟实际边框不完全一致，它不影响布局。
+    2.它不会响应鼠标事件，比如悬停或点击。
+    3.通过inset'投影'形成的多边框可以响应鼠标事件。
+*/
+.lgh-multiple-border{
+    width:10px;
+    height:10px;
+    margin: 0 100px;
+    background: red;
+    border-radius: 50%;
+    box-shadow: 0 0 0 10px orange, 0 0 0 20px blue,0 0 0 30px black,0 0 0 40px purple,0 0 0 50px green;
+}
+.lgh-multiple-border:hover{
+    cursor: pointer;
+}
+.lgh-multiple-border-inset{
+    width:100px;
+    height:100px;
+    margin: 0 100px;
+    background: red;
+    border-radius: 50%;
+    box-shadow: 0 0 0 40px purple,0 0 0 50px green,0 0 0 10px orange inset, 0 0 0 20px blue inset,0 0 0 30px black inset;
+}
+.lgh-multiple-border-inset:hover{
+    cursor: pointer;
+}
+/*
+    内实外虚之双层边框
+    outline-offset为负值时，向里(boder)偏移
+    注意事项：
+    1.outline不会贴合border-radius产生的圆角
+*/
+.lgh-border-outline{
+    background: white;
+    border:10px solid black;
+    border-radius: 5px;
+    outline:1px dashed white;
+    outline-offset: -5px;
+}
+/*
+    background复合属性
+    background-color/clip/image/position/size/repeat/origin/attachment
+    linear-gradient()并不是背景颜色，而是背景图像background-image
+    background-position的扩展语法
+    background-position:top 50px left 50px;//将背景图片(background-image)位于该元素悬挂点(background-origin)规定的盒模型 距离上20px，距离左20px
+    background-position/size/repeat/origin:这些都是指定背景图片的样式
+    background-origin:border-box/padding-box(默认值)/content-box 该属性规定了background-position是根据哪个盒模型进行定位的
+    background-clip:border-box(默认值)/padding-box/content-box 该属性规定了background-color是根据哪个盒模型进行切割的
+    background-attachment:fixed/scroll 该属性规定背景图像是否固定或者跟着该元素的其余子元素的滚动而滚动
+    注意事项：
+    1.background-position 一定要写到background-size前面,且加上 /
+    2.background-clip 一定要写到background-origin前面，不用加上 /
+    3.如果背景图像的 background-attachment 属性为 "fixed"，background-origin属性没有效果
+
+*/
+.lgh-background{
+    border:10px solid black;
+    padding:10px;    
+    /*background:#58a linear-gradient(hsla(60,100%,50%,1) 50%,hsla(120,100%,50%,1) 0) top 20px left 20px / 100px 100px no-repeat;*/
+}
+.lgh-background-clip-origin-border{
+    /*background-clip:border-box;*/
+    /*background-origin: border-box;*/
+    background:#58a border-box linear-gradient(hsla(60,100%,50%,1) 50%,hsla(120,100%,50%,1) 0) top 20px left 20px / 100px 100px border-box no-repeat;
+}
+.lgh-background-clip-origin-padding{
+    /*background-clip:padding-box;*/
+    /*background-origin: padding-box;*/
+    background:#58a padding-box linear-gradient(hsla(60,100%,50%,1) 50%,hsla(120,100%,50%,1) 0) top 20px left 20px / 100px 100px padding-box no-repeat;
+}
+.lgh-background-clip-origin-content{
+    /*background-clip:content-box;*/
+    /*background-origin: content-box;*/
+    background:#58a content-box linear-gradient(hsla(60,100%,50%,1) 50%,hsla(120,100%,50%,1) 0) top 20px left 20px / 100px 100px content-box no-repeat;
+}
+/*
+    父子双div之子div假传圣旨
+    父子div(块级元素)中，只有子div有margin-top值，两者都没有其余的margin,padding,border时，会出现这种诡异情况
+*/
+.parent{
+    width:100px;
+    height:100px;
+    background: red;
+}
+.children{
+    width:50px;
+    height:50px;
+    background: black;
+    margin: 20px 0 0 0;
+    /*margin-top:20px;*/
+}
+/*
+    calc()使用注意事项
+    在calc()函数内部的 - 和 + 运算符的两侧各加上一个空白符，否则会出现解析错误。
+*/
+/*
+    内圆外方边框原理：
+    border、box-shadow会贴着border-radius产生的圆角
+    outline不会贴着border-radius产生的圆角
+    outline来形成外方的边框
+    box-shadow产生的内边框以与outline同样的颜色来将边角空白补上，其中阴影半径为outline宽度值的一半
+    注意事项：
+    outline不会贴着border-radius产生的圆角 这是一个bug,未来可能修复
+
+*/
+.lgh-neiyuanwaifang-border{
+    position: relative;
+    top: -30px;
+    padding:5px;
+    background:tan;
+    border-radius: 5px;
+    box-shadow: 0 0 0 10px red;
+    outline:10px solid black;
+}
+/*
+    线性渐变色
+    linear-gradient(渐变方向|渐变角度 渐变颜色 渐变颜色宽度,渐变颜色 渐变颜色宽度,...)
+    渐变方向：to top、to bottom、to left、to right、to top right、to top left、to bottom right、to bottom left
+    默认值 to bottom/180deg/.5turn
+*/
+.lgh-linear-gradient1{
+    background:linear-gradient(#fb3,#58a);
+}
+.lgh-linear-gradient2{
+    /*从上往下 #fb3颜色占30%，#fb3-#58a过度颜色占40%，#58a颜色占30%*/
+    background:linear-gradient(#fb3 30%,#58a 70%);
+}
+.lgh-linear-gradient3{
+    border:1px solid black;
+    /*background:linear-gradient(#fb3 50%,#58a 50%);*/
+    /*上一行等价于下一行*/
+    background:linear-gradient(#fb3 50%,#58a 0) no-repeat;
+    background-size: 100% 40px;
+}
+.lgh-linear-gradient4{
+    background:linear-gradient(orange 25%,purple 0%,purple 50%,#58a 0,#58a 75%,green 0%);
+    /*上一行等价于下一行*/
+    /*background:linear-gradient(orange 0%,orange 25%,purple 25%,purple 50%,#58a 50%,#58a 75%,green 75%,green 100%);*/
+    background-size: 100% 50%;
+}
+.lgh-linear-gradient5{
+    background:linear-gradient(90deg,orange 25%,purple 0%,purple 50%,#58a 0,#58a 75%,green 0%);
+    background-size: 50% 100%;
+}
+/*
+    45度-4条-斜条纹
+    注意事项：
+    1.斜条纹的宽度不可控制
+*/
+.lgh-linear-gradient6{
+    background:linear-gradient(45deg,orange 25%,purple 0%,purple 50%,#58a 0,#58a 75%,green 0%);
+    background-size: 100% 100%;
+}
+/*
+    失败-45度-4条-斜条纹-条纹宽度可控
+*/
+.lgh-linear-gradient7{
+    background:linear-gradient(45deg,orange 25%,purple 0%,purple 50%,#58a 0,#58a 75%,green 0%);
+    background-size: 40px 40px;
+}
+/*
+    成功-45度-2条-斜条纹-条纹宽度可控
+    不同的条纹色数由四条变为了两条
+    条纹宽度 = 40/2/√2
+    注意事项：
+    1.这种类型的条纹的渐进方向只能是45deg
+*/
+.lgh-linear-gradient8{
+    background:linear-gradient(45deg,orange 25%,purple 0%,purple 50%,orange 0,orange 75%,purple 0%);
+    background-size: 40px 40px;
+}
+/*
+    重复线性渐变色
+    repeating-linear-gradient(渐变方向|渐变角度 渐变颜色 渐变颜色宽度,渐变颜色 渐变颜色宽度,...)
+
+    成功-60度-4条-斜条纹-条纹宽度可控
+    条文数量任意，渐进角度任意
+    条纹宽度 = 同一颜色宽度之差，如 10px - 0 
+    注意事项：
+    1.创建4条条纹必须使用4对颜色值，即8个颜色，缺一不可
+*/
+.lgh-linear-gradient9{
+    background:repeating-linear-gradient(60deg,orange 0,orange 10px,purple 0,purple 20px,#58a 0,#58a 30px,green 0,green 40px);
+    /*未来CSS4中，上一行代码可能等价于下一行代码*/
+    /*background:repeating-linear-gradient(60deg,orange 0 10px,purple 0 20px,#58a 0 30px,green 0 40px);*/
+    
+}
+.lgh-linear-gradient10{
+    background:repeating-linear-gradient(60deg,orange,purple 10px);
+}
+/*
+    同色系条纹
+    主色调 = background-color/transparent
+    浅色调 = backrgound-color/transparent + 半透明白色hsla(0,0%,100%,.2)
+*/
+.lgh-linear-gradient11{
+    background:orange;/*版本回退方案*/
+    background:orange repeating-linear-gradient(60deg,hsla(0,0%,100%,.2) 0,hsla(0,0%,100%,.2) 10px,transparent 0,transparent 20px);
+}
+/*
+    网格
+*/
+.lgh-grid-background1{
+    background:white;
+    background-image:
+    /*竖直条纹，高度为100px,宽度分别为20px的红白条*/
+    linear-gradient(90deg,rgba(200,0,0,.5) 50%,transparent 0),
+    /*水平条纹，宽度为100px,高度分别为20px的红白条*/
+    linear-gradient(180deg,rgba(200,0,0,.5) 50%,transparent 0);
+    background-size:40px 40px;
+}
+.lgh-grid-background2{
+    /* 加这个border是为了突出显示1px宽的白条*/
+    border:1px solid black;
+    background:black;
+    background-image:
+    /*水平条纹，宽度为100px,高度度分别为1px,39px的白黑条*/
+    linear-gradient(white 1px,transparent 0),
+    /*竖直条纹，高度为100px,宽度分别为1px,39px的白黑条*/
+    linear-gradient(90deg,rgb(255,255,255) 1px ,transparent 0);
+    background-size:40px 40px;
+}
+.lgh-grid-background3{
+    border:1px solid black;
+    background:black;
+    background-image:
+    /*水平条纹，宽度为100px,高度分别为2px,48px的白黑条*/
+    linear-gradient(white 2px,transparent 0),
+    /*竖直条纹，高度为100px,宽度分别为2px,48px的白黑条*/
+    linear-gradient(90deg,white 2px,transparent 0),
+    /*水平条纹，宽度为100px,高度分别为1px,9px的白黑条*/
+    linear-gradient(rgba(255,255,255,.3) 1px ,transparent 0),
+    /*竖直条纹，高度为100px,宽度分别为1px,9px的白黑条*/
+    linear-gradient(90deg,rgba(255,255,255,.3) 1px ,transparent 0);
+    background-size: 50px 50px,50px 50px,10px 10px,10px 10px;
+}
+/*
+    径向渐变
+    radial-gradient([shape | size] [at position])
+    shape：定义径向渐变的形状 circle(圆形) ellipse(椭圆)，若没有指定该属性，也没有指定size属性，径向渐变的形状为容器形状。
+    position:定义径向渐变的圆心位置 默认值center  length|percentage|top|right|bottom|left|center
+    size:指定径向渐变的主要半径和次要半径 默认值farther-corner  length|percentage|关键词
+    关键词主要有
+    closet-side     渐变半径 = 从渐变圆心到离渐变圆心最近的容器边的长度
+    farther-side    渐变半径 = 从渐变圆心到离渐变圆心最远的容器边的长度
+    closet-corner   渐变半径 = 从渐变圆心到离渐变圆心最近的容器角的长度
+    farther-corner  渐变半径 = 从渐变圆心到离渐变圆心最近的容器角的长度
+*/
+.lgh-radial-gradient1{
+    background:black;
+    background-image: radial-gradient(orange 30%,transparent 0);
+    background-size:20px 20px;
+}
+.lgh-radial-gradient2{
+    background:black;
+    background-image: 
+    radial-gradient(orange 30%,transparent 0),
+    radial-gradient(orange 30%,transparent 0);
+    background-position: 0 0,10px 10px;
+    background-size:20px 20px;
+}
+/*
+    前提：没有指定size属性的情况下：
+    如果容器为正方形，径向渐变的图形都是圆。shape属性无法改变其渐变形状。
+    如果容器为矩形，径向渐变的形状随着shape属性的改变而改变。
+    如果没有指定shape属性，径向渐变的形状为容器的形状。
+*/
+.lgh-radial-gradient3{
+    background-image: radial-gradient(hsla(120,70%,60%,.9),hsla(360,60%,60%,.9));
+}
+.lgh-radial-gradient4{
+    width:150px;
+    background-image: radial-gradient(hsla(120,70%,60%,.9),hsla(360,60%,60%,.9));
+}
+.lgh-radial-gradient5{
+    width:150px;
+    background-image: radial-gradient(circle,hsla(120,70%,60%,.9),hsla(360,60%,60%,.9));
+}
+.lgh-radial-gradient6{
+    width:150px;
+    background-image: radial-gradient(ellipse,hsla(120,70%,60%,.9),hsla(360,60%,60%,.9));
+}
+/*对于radial-gradient的各种尝试*/
+.lgh-radial-gradient7{
+    background-image: radial-gradient(70px 40px,hsla(120,70%,60%,.9),hsla(360,60%,60%,.9));
+}
+.lgh-radial-gradient8{
+    border-radius:50%;
+    background-image: radial-gradient(circle at center, rgb(220, 75, 200),rgb(0, 0, 75));
+}
+.lgh-radial-gradient9{
+    border-radius:50%;
+    background-image: radial-gradient(ellipse at top, rgb(220, 75, 200),rgb(0, 0, 75));
+}
+.lgh-radial-gradient10{
+    border-radius:50%;
+    background-image: radial-gradient(8em circle at top, hsla(220,89%,100%,1),hsla(30,100%,50%,.9));
+}
+.lgh-radial-gradient11{
+    border-radius:50%;
+    background-image: radial-gradient(red 20%,green 50%,blue 80%);
+}
+.lgh-radial-gradient12{
+    border-radius:50%;
+    background-image: radial-gradient(red,green,blue);
+}
+.lgh-radial-gradient13{
+    background-image: radial-gradient(40px circle at top,rgb(0,0,0) 30%,rgba(255,190,90,.9) 200px,hsl(123,58%,90%) 8em,hsla(230,40%,90%,.8) 80%,blue);
+}
+.lgh-radial-gradient14{
+    width:300px;
+    height:200px;
+    background-image: repeating-radial-gradient(red,green 40px,orange 80px);
+}
+/*笔记本效果*/
+.lgh-radial-gradient15{
+    width:800px;
+    height:200px;
+    background: repeating-linear-gradient( to top, #f9f9f9, #f9f9f9 29px, #ccc 30px ); 
+    background-size: 100% 30px; 
+    position: relative;
+}
+/*竖直双线*/
+.lgh-radial-gradient15:before{
+    content:'';
+    position:absolute;
+    display:inline-block;
+    height:100%;
+    width:4px;
+    border-left: 4px double #FCA;
+    left:10px;
+}
+.lgh-qipan-background1{
+    background:linear-gradient(45deg,#bbb 25%,transparent 0);
+    background-size: 20px 20px;
+}
+.lgh-qipan-background2{
+    background:linear-gradient(225deg,#bbb 25%,transparent 0);
+    background-size: 20px 20px;
+}
+.lgh-qipan-background3{
+    background:linear-gradient(45deg,transparent 75%,#bbb 0);
+    background-size: 20px 20px;
+}
+.lgh-qipan-background4{
+    background:
+    linear-gradient(45deg,#bbb 25%,transparent 0),
+    linear-gradient(45deg,transparent 75%,#bbb 0);
+    /*
+    第一层背景三角形不动，第二层背景三角形向下10px，向右10px
+    */
+    background-position:0 0 ,10px 10px;
+    background-size: 20px 20px;
+}
+/*四层渐变棋盘*/
+.lgh-qipan-background5{
+    background:
+    linear-gradient(45deg,#bbb 25%,transparent 0),
+    linear-gradient(45deg,transparent 75%,#bbb 0),
+    linear-gradient(45deg,#bbb 25%,transparent 0),
+    linear-gradient(45deg,transparent 75%,#bbb 0);
+    background-position: 0 0,10px 10px,10px -10px,20px 0;
+    background-size: 20px 20px;
+}
+/*
+两层渐变棋盘，
+第一层为浅灰色，占据20px-20px正方形的0-25%、75%-100%，
+第二层为黑色，也是占据占据20px-20px正方形的0-25%、75%-100%，只不过将其往右10px,往下10px。
+*/
+.lgh-qipan-background6{
+    border:1px solid green;
+    background:
+    linear-gradient(45deg,rgba(0,0,0,.5) 25%,transparent 0,transparent 75%,rgba(0,0,0,.5) 0),
+    linear-gradient(45deg,rgba(0,0,0,1) 25% ,transparent 0,transparent 75%,rgba(0,0,0,1) 0);
+    background-position: 0 0,10px 10px;    
+    background-size: 20px 20px;
+}
+/*
+三层渐变模拟随机性背景，显而易见，第一层背景颜色位于图层最上层，也最容易发现其规律性
+三个background-size的尺寸规定了贴片每隔240px重复一次，即80、60、40的最小公倍数
+*/
+.lgh-random-background1{
+    width:1000px;
+    background:
+    linear-gradient(90deg,#fb3 10px,transparent 0),
+    linear-gradient(90deg,#6b0 20px,transparent 0),
+    linear-gradient(90deg,#655 20px,transparent 0);
+    background-size: 80px 100%,60px 100%,40px 100%;
+}
+/*
+蝉原则伪随机
+当三个background-size的尺寸都为相对质数时，它们的最小公倍数就会比较大，贴片也会什么宽，不容易发现其规律性。
+*/
+.lgh-random-background2{
+    width:1000px;
+    background:
+    linear-gradient(90deg,#fb3 11px,transparent 0),
+    linear-gradient(90deg,#6b0 23px,transparent 0),
+    linear-gradient(90deg,#655 21px,transparent 0);
+    background-size: 83px 100%,61px 100%,41px 100%;
+}
+.lgh-random-background3{
+    width:1000px;
+    background:
+    linear-gradient(90deg,black 11px,transparent 0),
+    linear-gradient(90deg,black 21px,transparent 0);
+    background-size: 43px 100%,61px 100%;
+}
+/*
+    随机动画制作的loading图层
+*/
+@keyframes spin{
+    to {
+        transform: rotate(1turn);
+    }
+}
+@keyframes radius{
+    50% {
+        border-radius:50%;
+    }
+}
+@keyframes color{
+    33% {
+        color:orange;
+    }
+    66% {
+        color:deeplink;
+    }
+}
+@keyframes width{
+    50% {
+        border-width: .3em;
+    }
+}
+.lgh-random-animation-loading{
+    width:500px;
+    height:100px;
+    margin:auto;
+    font:18px '隶书';
+}
+.lgh-random-animation-loading:before{
+    content:'';
+    display:block;
+    width:4em;
+    height:4em;
+    margin:.3em auto 1em;
+    border:.6em solid;
+    color:yellowgreen;
+    box-sizing: border-box;
+    animation: 1s spin, .7s radius, 1.1s color,1.3s width;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+.loading-parent{
+    display: flex;
+    margin: 0;
+    min-height: 150px;
+    text-align: center;
+    font-size:20px;
+    background: #655;
+    color: white;
+}
+/*
+    图片边框
+    background设置两层背景图像，上层为渐进色模拟的纯白图片，下层为要在边框中显示的背景图片。
+    通过设置两层背景图片不同的background-clip来使下层要显示的图片在边框中得到展现。
+    容易忽略的是将background-origin设置为border-box，将两层背景图像都从border-box开始展现图片。
+*/
+.lgh-image-border{
+    max-width:400px;
+    padding:1em;
+    border:1em solid transparent;
+    background:
+    linear-gradient(white,white),
+    url('image/3.jpg');
+    background-size:cover;
+    background-clip:padding-box,border-box;
+    background-origin:border-box;
+}
+.lgh-image-border1{
+    max-width:400px;
+    padding:1em;
+    border:1em solid transparent;
+    background:
+    linear-gradient(white,white) padding-box,
+    url('image/3.jpg') border-box 0 0 / cover ;
+}
+/*
+    信封
+*/
+.lgh-envelope{
+    width:500px;
+    line-height: 250px;
+    padding:1em;
+    border:1em solid transparent;
+    background:
+    linear-gradient(white,white) padding-box,
+    repeating-linear-gradient(-45deg,red 0,red 12.5%,
+    transparent 0,transparent 25%,#58a 0,#58a 37.5%,
+    transparent 0,transparent 50%) 0 / 5em 5em;
+    text-align:center;
+}
+.lgh-envelope1{
+    width:500px;
+    line-height: 250px;
+    padding:1em;
+    border:1em solid transparent;
+    border-image:
+    16 repeating-linear-gradient(-45deg,
+    red 0,red 1em,transparent 0,transparent 2em,
+    #58a 0,#58a 3em,transparent 0,transparent 4em);
+    text-align:center;
+}
+/*
+    ???没有实现
+*/
+.lgh-border-image{
+    /*width:100px;
+    height:100px;*/
+    background:url('image/3.jpg') 0 0 / contain;
+    background-clip:content-box;
+    border-image:url('./image/5.png') 22 round;
+    border:22px;
+    /*display:inline-block;*/
+}
+@keyframes ants{
+    to {
+        background-position:100%;
+    }
+}
+.lgh-ant-animation{
+    padding:1em;
+    border:1px solid transparent;
+    background:
+    linear-gradient(white,white) padding-box,
+    repeating-linear-gradient(-45deg,black 0,black 25%,white 0,white 50%) 0 / .6em .6em;
+    animation:ants 12s linear infinite;
+}
+.lgh-annoation{
+    border-top:.2em solid transparent;
+    border-image:100% 0 0 linear-gradient(90deg,currentColor 4em,transparent 0);
+    padding-top:1em;
+    font: 100%/1.4 Baskerville, Palatino, serif;
+}
+/*
+    椭圆
+    border-radius：水平半径 / 垂直半径
+    注意事项：
+    1.使用border-radius只能实现椭圆、半椭圆、四分之一椭圆，
+*/
+.lgh-ellipse1{
+    width:200px;
+    height:150px;
+    border-radius: 50%;
+    background: #fb3;
+}
+.lgh-ellipse2{
+    width:200px;
+    height:150px;
+    border-radius: 50% / 100% 100% 0 0 ;
+    /*
+    等价于
+    border-top-left-radius: 50%  100%;
+    border-top-right-radius: 50%  100%;
+    border-bottom-right-radius: 50%  0;
+    border-bottom-left-radius: 50%  0 ;
+    */
+    background: #fb3;
+}
+.lgh-ellipse3{
+    width:200px;
+    height:150px;
+    border-radius: 100% 0 0 100% / 50% ;
+    background: #fb3;
+}
+.lgh-ellipse4{
+    width:200px;
+    height:150px;
+    border-radius: 100% 0 0 0 ;
+    background: #fb3;
+}
+/*
+    平行四边形————伪元素方案
+    当你希望伪元素保持良好的灵活性，可以自动继承宿主元素的尺寸，
+    甚至当宿主元素的尺寸是由其内容来决定时仍然如此。一个简单的方法是：
+    给宿主元素应用position:relative样式，并为伪元素设置position:absolute，
+    然后再把所有的偏移量设置为零，以便让它在水平和垂直方向上都能被拉伸至宿主元素的尺寸。
+    伪元素生成的方块是重叠在宿主元素内容之上的，可以为其设置z-index:-1，将其堆叠层次推到宿主元素之后。
+    总的来说：利用伪元素以及定位属性产生一个方块，然后对伪元素设置样式，并将其放置在宿主元素的下层。
+*/
+.lgh-parallelogram{
+    position:relative;
+    width:150px;
+    text-align:center;
+    text-indent: 2em;
+}
+.lgh-parallelogram:before{
+    position:absolute;
+    z-index:-1;
+    content:'';
+    top:0;right:0;bottom:0;left:0;
+    background:#fb3;
+    transform:skewX(-45deg);
+}
+/*.lgh-rhombus{
+    position:relative;
+    text-align:center;
+    line-height:100px;
+}
+.lgh-rhombus:before{
+    position:absolute;
+    z-index:-1;
+    content:'';
+    top:0;right:0;bottom:0;left:0;
+    background:url('image/2.jpg') 0 0 / 100px 100px;
+    transform:rotate(45deg);
+}
+.lgh-rhombus1{
+    width:72px;
+    height:72px;
+    border:1px solid green;
+    transform:rotate(45deg);
+    overflow:hidden;
+}
+.lgh-rhombus1 > img{
+    max-width:100%;
+    transform:rotate(-45deg) scale(1.42);
+}*/
+.lgh-clip-path{
+    background:url('image/2.jpg') 0 0 / 200px 200px;
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+    transition:1s clip-path;    
+}
+.lgh-clip-path:hover{
+    clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
+}
+/*
+    切角————渐变色的灵活使用
+    注意事项：
+    1.不同个数的切角的background-size不同
+    2.当不止一个切角时要使用background-repeat
+    3.切角的直角边长度为15√2px 切角深度为15px
+*/
+.lgh-corner-cut{
+    background:linear-gradient(-45deg,transparent 15px,#58a 0);
+}
+.lgh-corner-cut1{
+    background:
+    linear-gradient(45deg,transparent 15px,#58a 0) left,
+    linear-gradient(-45deg,transparent 15px,#655 0) right;
+    background-size:50% 100%;
+    background-repeat: no-repeat;
+}
+.lgh-corner-cut2{
+    background:
+    linear-gradient(135deg,transparent 15px,#58a 0) top left,
+    linear-gradient(-135deg,transparent 15px,#655 0) top right,
+    linear-gradient(-45deg,transparent 15px,#58a 0) bottom right,
+    linear-gradient(45deg,transparent 15px,#655 0) bottom left;
+    background-size:50% 50%;
+    background-repeat: no-repeat;
+}
+.lgh-corner-cut3{
+    background:
+    radial-gradient(circle at top left,transparent 15px,#58a 0) top left,
+    radial-gradient(circle at top right,transparent 15px,#655 0) top right,
+    radial-gradient(circle at bottom left,transparent 15px,#655 0) bottom left,
+    radial-gradient(circle at bottom right,transparent 15px,#58a 0) bottom right;
+    background-size:50% 50%;
+    background-repeat: no-repeat;
+}
+/*
+    切角直角边为20px
+    当内边距不够时，它会切掉文本
+*/
+.lgh-corner-cut4{
+    background:#58a;
+    clip-path:polygon(20px 0,calc(100% - 20px) 0,100% 20px,100% calc(100% - 20px),calc(100% - 20px) 100%,20px 100%,0 calc(100% - 20px),0 20px);
+}
+/*
+    perspective:length|none(默认值)
+    perspective属性对于3D变形来说至关重要。该属性会设置查看者的位置，并将可视内容映射到一个视锥上，继而投到一个2D视平面上。
+    如果不指定透视，则Z轴空间中的所有点将平铺到同一个2D视平面中，并且变换结果中将不存在景深概念。
+    简单来说，perspective属性，我们可以简单的理解为视距，用来设置用户和元素3D空间Z平面之间的距离。
+    而其效应由他的值来决定，值越小，用户与3D空间Z平面距离越近，视觉效果更令人印象深刻；反之，值越大，用户与3D空间Z平面距离越远，视觉效果就很小。
+*/
+.lgh-perspective{
+    position:relative;
+    text-align:center;
+}
+.lgh-perspective:before{
+    z-index:-1;
+    position:absolute;
+    content:'';
+    top:0;right:0;bottom:0;left:0;
+    background: url('image/3.jpg')  0 0 / 100px 100px;
+    transform: perspective(120px) rotateX(45deg);
+    transform-origin:bottom;
+}
+/*
+    矩形————3D变幻+伪元素
+    注意事项：
+    1.对元素使用了3D变形之后，其内部的变形效应是不可逆转的。
+    这一点和2D变形不同(在2D变形的体系之下，内部的逆向变形可以抵消外部的变形效应)
+
+    2.采用对伪元素使用3D变形，而文字内容在宿主元素，不会受其影响。
+    但是伪元素的宽度(相比于宿主元素)会增加，高度会减少。
+    3.使用transfrom-origin:bottom,使伪元素在3D空间中旋转时，可以把它的底边固定住，这样解决伪元素宽度增加的问题。
+    再使用变形属性scale(130%)来弥补伪元素在高度上的缩水。
+    4.rotateX(45deg) 为3D变幻
+
+*/
+.lgh-trapezoid{
+    position:relative;
+    width:60px;
+    height:50px;
+    padding:.3em 1em 0;
+    left:60px;
+    text-align:center;
+}
+.lgh-trapezoid:before{
+    position:absolute;
+    content:'';
+    top:0;right:0;bottom:0;left:0;
+    z-index:-1;
+    border:2px solid rgba(0,0,0,.4);
+    border-bottom:none;
+    border-radius: .5em .5em 0 0 ;
+    box-shadow: 0 .15em white inset;
+    background:#ccc;
+    background-image:linear-gradient(hsla(0,0%,100%,.6),hsla(0,0%,100%,0));
+    transform: perspective(50px) scale(1.3) rotateX(14deg);
+    transform-origin:bottom;
+}
+/*
+    饼图————伪元素
+    宿主元素、伪元素分别一层背景，伪元素背景图层在上，通过旋转来决定露出多大的扇区。
+*/
+.lgh-pie{
+    border-radius: 50%;
+    background:yellowgreen linear-gradient(to right,transparent 50%,#655 0);
+}
+.lgh-pie:before{
+    /*z-index:-1;*/
+    content:'';
+    display:block;
+    height:100%;
+    margin-left: 50%;
+    background:red;
+    transform-origin: 0 50%; /* 等价于 left*/
+    transform:rotate(.1turn);
+}
+@keyframes bg{
+    50%{
+        background-color:#655;
+    }
+}
+@keyframes spin1{
+    to {
+        transform:rotate(.5turn);
+    }
+}
+.lgh-pie1{
+    margin-left:20px;
+    border-radius: 50%;
+    background:yellowgreen linear-gradient(to right,transparent 50%,#655 0);
+    overflow:hidden;
+}
+.lgh-pie1:before{
+    content:'';
+    display:block;
+    height:100%;
+    margin-left: 50%;
+    background-color:inherit;
+    transform-origin: 0 50%; /* 等价于 left*/
+    animation:spin1 3s linear infinite,bg 6s step-end infinite;
+}
+.lgh-pie2{
+    border-radius: 50%;
+    background:yellowgreen linear-gradient(to right,transparent 50%,#655 0);
+}
+.lgh-pie2:before{
+    content:'';
+    display:block;
+    height:100%;
+    margin-left: 50%;
+    border-radius: 0 100% 100% 0 / 50%;
+    background-color:inherit;
+    transform-origin: 0 50%; /* 等价于 left*/
+    animation:spin1 3s linear infinite,bg 6s step-end infinite;
+    animation-play-state: paused;
+    animation-delay:-1.2s;
+}
+.lgh-pie3{
+    border-radius:50%;
+    background:conic-gradient(#655 40%,yellowgreen 0);
+}
+/*
+    animation-timing-function:step-start/step-end;
+    steps(1, start) 等于step-start，steps(1,end)等于step-end
+    step-start:黄色与蓝色相互切换
+    step-end:红色与黄色相互切换
+    2个参数都会选择性的跳过前后部分，start跳过0%，end跳过100%
+    step-start在变化过程中，都是以下一帧的显示效果来填充间隔动画，所以0% 到 50%  直接就显示了黄色yellow
+    step-end与上面相反，都是以上一帧的显示效果来填充间隔动画，所以0% 到 50% 直接就显示了红色red
+    注意事项：
+    1.steps函数，它可以传入两个参数，第一个是一个大于0的整数，他是将间隔动画等分成指定数目的小间隔动画，
+    然后根据第二个参数来决定显示效果。
+    2.timing-function 作用于每两个关键帧之间，而不是整个动画
+*/
+@keyframes step-start-end{
+    0%{background:red;}
+    50%{background:yellow;}
+    100%{background:blue;}
+}
+.lgh-step-start-end{
+    animation:step-start-end 2s step-start infinite;
+}
+.lgh-attr{
+    border:1px solid black;
+}
+.lgh-attr:before{
+    content:attr(data-attr) '';
+}
+.lgh-attr:after{
+    content:attr(data-attr) '';
+}
+/*
+    attr-3D特效
+*/
+.lgh-attr1{
+    z-index:1;
+    position:relative;
+    background:url('image/3.jpg') 0 0 / 200px 200px;
+    overflow:hidden;
+}
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+.lgh-attr1:hover:before,
+.lgh-attr1:hover:after{
+    z-index:10;
+    transform:translateY(0) scale(1);
+}
+.lgh-attr1:before,.lgh-attr1:after{
+    position:absolute;
+    z-index:-1;
+    width:100%;
+    height:50%;
+    background:rgba(107,38,68,.6);
+    color:#f1f1f1;
+    font-size:18px;
+    transition:transform .4s ease-out;
+}
+.lgh-attr1:before{
+    content:attr(data-content) '...';
+    top:50%;
+    background:rgba(107,38,68,.6);
+    transform:translateY(100%) scale(.8);
+}
+.lgh-attr1:after{
+    content: attr(data-title) '...';
+    top: 0;
+    padding-top: 15px;
+    background: rgba(0,0,0,.4);
+    font-weight: 300;
+    text-align: center;
+    transform: translateY(-100%) scale(.8);
+}
+/*
+    box-shadow:2px 3px 4px rgba(0,0,0,.5);
+    以该元素相同的尺寸和位置，产生一个阴影图层，然后将其向右移2px,向下移3px,阴影半径为4px
+    该属性的第四个参数为扩张半径，该参数会根据你指定的值去扩大或(指定负值时)缩小投影的尺寸。
+
+    注意事项：
+    1.阴影图层位于元素的上层 ???
+*/
+.lgh-shadow{
+    background:#58a;
+    box-shadow: 6px 0 4px -4px black;
+}
+.lgh-shadow1{
+    background:#58a;
+    box-shadow: 6px 6px 4px -4px black;
+}
+.lgh-shadow2{
+    background:#58a;
+    box-shadow: 3px 3px 6px -3px black;
+}
+.lgh-shadow3{
+    background:#58a;
+    box-shadow: 
+    6px 0 4px -4px black,
+    -6px 0 4px -4px black;
+}
+/*
+    border-radius、box-shadow无效的情况：
+    1.半透明图像、背景图像、或者border-image
+    2.元素设置了点状、虚线或半透明的边框，
+    但没有背景(或者当background-clip不是border-box时)
+    3.对话气泡，它的小尾巴通常是用伪元素生成的
+    4.切角效果、折角效果
+    5.通过clip-path生成的形状，比如'菱形图片'
+*/
+.lgh-shadow4{
+    background:#58a;
+    clip-path:polygon(20px 0,calc(100% - 20px) 0,100% 20px,100% calc(100% - 20px),calc(100% - 20px) 100%,20px 100%,0 calc(100% - 20px),0 20px);
+    box-shadow: 6px 0 4px -4px rgba(0,0,0,.5);
+}
+/*
+    drop-shadow(x偏移，y偏移，模糊半径,色值)
+    注意事项：
+    1.没有内阴影效果inset以及扩张半径
+    2.不能叠加阴影，就是不支持逗号写法
+    3.任何非透明的部分都会被一视同仁地被打上阴影，包括文本(如果背景是透明的)
+*/
+.lgh-shadow5{
+    background:#58a;
+    clip-path:polygon(20px 0,calc(100% - 20px) 0,100% 20px,100% calc(100% - 20px),calc(100% - 20px) 100%,20px 100%,0 calc(100% - 20px),0 20px);
+    /*box-shadow: 6px 0 4px -4px rgba(0,0,0,.5);*/
+    /*text-shadow:.1em .2em yellow;*/
+    filter:drop-shadow(6px 0 4px rgba(0,0,0,.5));
+}
+.lgh-shadow6{
+    border:10px dashed #beceeb;
+    box-shadow:5px 5px 10px black;
+}
+.lgh-shadow7{
+    border:10px dashed #beceeb;
+    filter:drop-shadow(5px 5px 10px black);
+}
+/*
+    sepia(0~1)————将图像转换为深褐色，
+    0：默认值，图像不变
+    1：深褐色
+    本质就是给图片增加一种降低饱和度的橙黄色染色效果，几乎所有像素的色相值会被收敛到35-40
+*/
+.lgh-dye{
+    background:url(image/3.jpg) 0 0 / 100px 100px;
+    filter:sepia(.5);
+}
+.lgh-dye:hover{
+    filter:sepia(0);
+}
+/*
+    saturate(0~1+)————改变饱和度
+    0:完全不饱和
+    1:图像不变 默认值
+    1+:更高的饱和度
+*/
+.lgh-dye1{
+    background:url(image/3.jpg) 0 0 / 100px 100px;
+    filter:saturate(4);
+}
+.lgh-dye1:hover{
+    filter:saturate(1);
+}
+/*
+    hue-rotate(0deg~360deg)————在图片原有色相的基础上，把每个像素的色相以指定的度数进行偏移。
+    0deg:图像不变 默认值
+    360deg:图像不变 正好一圈
+*/
+.lgh-dye2{
+    background:url(image/3.jpg) 0 0 / 100px 100px;
+    filter:hue-rotate(180deg);
+}
+.lgh-dye2:hover{
+    filter:hue-rotate(360deg);
+}
+.lgh-dye3{
+    background:url(image/3.jpg) 0 0 / 100px 100px;
+    filter:sepia(1) saturate(4) hue-rotate(295deg);
+    transition:.5s filter;
+}
+.lgh-dye3:hover{
+    filter:none;
+}
+/*
+    混合模式染色：控制了上层元素的颜色与下层元素颜色进行混合的方式。
+    luminosity混合方式会保留上层元素的HSL亮度信息，并从它的下层吸取色相饱和度信息。
+    background-blend-mode:luminosity 让元素的每层背景跟它的下层背景进行混合
+    mix-blend-mode:luminosity 把整个元素向下进行混合
+    
+*/
+.lgh-dye4{
+    background: hsl(335,100%,50%) url(image/3.jpg) 0 0 / 100px 100px;
+    /*等价*/
+    /*background: 
+    url(image/3.jpg) 0 0 / 100px 100px,
+    linear-gradient(hsl(335,100%,50%),hsl(335,100%,50%));*/
+    background-blend-mode: luminosity;
+    transition:.5s background-color;
+}
+.lgh-dye4:hover{
+    background-color: transparent;
+}
+.lgh-dye5{
+    background:hsl(335,100%,50%);
+}
+.lgh-dye5 > img{
+    width:100px;
+    height:100px;
+    mix-blend-mode: luminosity;
+}
+/*
+    毛玻璃效果
+*/
+.lgh-ground-glass{
+    height:800px;
+    border:1px solid rgba(0,0,0,.1);
+    font-size:26px;
+}
+.lgh-ground-glass,
+.lgh-ground-glass > main:before{
+    background:url('./image/4.jpg') 0 / cover;
+    /*background:url('./image/4.jpg') 0 / cover fixed;*/
+}
+/*
+    blur()滤镜会使整个元素都被模糊，包括元素中的文本，所以将其运用到伪元素中
+*/
+.lgh-ground-glass > main{
+    position:relative;
+    width:922px;
+    margin:300px auto;
+    border-radius: 10px;
+    background: hsla(0,0%,100%,.3);
+    overflow:hidden;
+}
+
+.lgh-ground-glass > main:before{
+    content:'';
+    position:absolute;
+    z-index:-1;
+    top:0;right:0;bottom:0;left:0;
+    margin:-30px;
+    filter:blur(6px);
+    background:rgba(255,0,0,.5);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

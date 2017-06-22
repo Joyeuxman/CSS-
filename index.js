@@ -23,7 +23,7 @@ function testProperty(property){
 
 
 /**
- * 测试元素的某个具体属性值是否存在
+ * 测试元素的某个具体属性值是否存在福
  * @param classFlag {string} 要添加的样式
  * @param value {string} 要进行测试的某个具体属性值，比如linear-gradient(red,tan)
  * @param property {string} 要进行测试的某个具体属性值的属性名，比如backgroundImage,注意使用驼峰命名法
