@@ -1263,15 +1263,247 @@ inherit可以用在任何CSS属性中，而且它总是绑定到父元素的计�
     filter:blur(6px);
     background:rgba(255,0,0,.5);
 }
-
-
-
-
-
-
-
-
-
+/*
+    45°折角————两层linear-gradient
+    第一层line-gradient()的background-size是第二层line-gradient()transparent宽度的根号2倍
+    注意事项：
+    1.只适用于45°
+*/
+.lgh-bevel-45{
+    background:
+    linear-gradient(to left bottom,transparent 50%,rgba(0,0,0,.4) 0) no-repeat 100% 0 / 20px 20px,
+    linear-gradient(-135deg,transparent 14.1px, #58a 0);
+}
+/*
+    60°折角————伪元素rotate并translateY
+*/
+.lgh-bevel-60{
+    position:relative;
+    background:linear-gradient(-150deg,transparent 15px, #58a 0);
+    border-radius: 5px;
+}
+.lgh-bevel-60:before{
+    position:absolute;
+    content:'';
+    top:0;right:0;
+    height:30px;width:17.3px;
+    background:linear-gradient(to left bottom,transparent 50%,rgba(0,0,0,.4) 0);
+    transform: translateY(-13px) rotate(-30deg);
+    transform-origin:bottom right;
+    border-bottom-left-radius:inherit;
+    box-shadow: -2px 2px 3px -1px rgba(0,0,0,.15))
+}
+/*
+    hyphens:连字符
+    none:禁止连字符 - 的出现
+    manual:默认值
+    auto:英文字母会出现 - 连字符
+    注意事项：
+    1.Chrome不支持该属性，fireBox支持
+*/
+.lgh-hyphen{
+    width:280px;
+    border:1px solid green;
+    font-size:14px;
+    hyphens:auto;
+    -moz-hyphens: auto;
+	-ms-hyphens: auto;
+	-webkit-hyphens: auto;
+}
+/*
+    换行符
+    dd、dt为块级元素
+*/
+.lgh-line-break{
+    margin:0;
+    width:400px;
+    border:1px solid green;
+    font-size:16px;
+    vertical-align: top;
+}
+dd,dt{
+    display: inline;
+}
+dd+dt:before{
+    content:'\A';/*Unicode换行符，也可以写作'\000A'*/
+    white-space:pre;
+}
+dd{
+    margin:0;
+    font-weight:bold;
+}
+dd+dd:before{
+    content:', ';
+    margin-left:-.25em;
+    font-weight:normal;
+}
+.lgh-tripe{
+    width:866px;
+    padding:.5em;
+    line-height:1.5;
+    background:beige linear-gradient(rgba(0,0,0,.2) 50%,transparent 0);
+    background-size: auto 3em;
+    background-origin:content-box;
+}
+.lgh-text{
+    width:200px;
+    background:hsl(210,13%,60%);
+    color:hsl(210,13%,30%);
+    /*text-shadow:0 1px 1px hsla(0,0%,100%,.8);*/
+    text-shadow:0 .03em .03em hsla(0,0%,100%,.8);
+}
+.lgh-text1{
+    background:hsl(210,13%,40%);
+    color:hsl(210,13%,75%);
+    text-shadow:0 -1px 1px black;
+}
+.lgh-text2{
+    color:white;
+    text-shadow:
+    1px 1px black,-1px -1px black,
+    1px -1px black, -1px 1px black;
+}
+.lgh-text3{
+    color:white;
+    text-shadow:
+    0 0 1px black, 0 0 1px black,
+    0 0 1px black, 0 0 1px black,
+    0 0 1px black, 0 0 1px black;
+}
+.lgh-text4{
+    background:#203;
+    color:#ffc;
+    text-shadow:0 0 .1em, 0 0 .3em;
+}
+.lgh-text5{
+    background:#203;
+    color:#ffc;
+    transition:1s;
+}
+.lgh-text5:hover{
+    text-shadow:0 0 .1em, 0 0 .3em; 
+}
+.lgh-text6{
+    background:#203;
+    color:#ffc;
+    transition:1s;
+}
+.lgh-text6:hover{
+    color:transparent;
+    text-shadow:0 0 .1em white, 0 0 .3em white;
+    /*filter:blur(.1em);*/
+}
+.lgh-text7{
+    background:#58a;
+    color:white;
+    text-shadow:
+    0 1px hsl(0,0%,85%),
+    0 2px hsl(0,0%,80%),
+    0 3px hsl(0,0%,75%),
+    0 4px hsl(0,0%,70%),
+    0 5px hsl(0,0%,65%),
+    0 5px 10px black;
+}
+.lgh-text8{
+    background:hsl(0,50%,45%);
+    color:white;
+    text-shadow:
+    1px 1px black,2px 2px black,
+    3px 3px black,4px 4px black,
+    5px 5px black,6px 6px black,
+    7px 7px black,8px 8px black;
+}
+.lgh-text9{
+    display:inline-block;
+    width:150px;
+    height:150px;
+    margin:1em;
+    font-size:16px;
+}
+.lgh-text9 path{
+    fill:none;
+}
+.lgh-text9 svg{
+    display:block;
+    overflow:visible;
+}
+.lgh-expand-click-area{
+    border:40px solid green;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.3) inset;
+    background:#58a;
+    vertical-align: top;
+    cursor:pointer;
+    background-clip: padding-box;
+}
+/*
+    不能添加z-index属性，不然不能扩大点击区域
+*/
+.lgh-expand-click-area1{
+    position:relative;
+    border-radius: 50%;
+    background:#58a;
+    vertical-align: top;
+    cursor:pointer;
+}
+.lgh-expand-click-area1:before{
+    position:absolute;
+    content:'';
+    top:-30px;right:-30px;
+    bottom:-10px;left:-10px;
+}   
+/*
+    自定义复选框
+*/
+.lgh-custom-checkbox:before{
+    content:'\a0';
+    display:inline-block;
+    width:.8em;
+    height:.8em;
+    margin-right:.2em;
+    border-radius: .2em;
+    background: silver;
+    vertical-align:.2em;
+    text-indent:.15em;
+    line-height:.65;
+}
+input[type='checkbox']:checked + label::before{
+    content:'\2713';
+    background:yellowgreen;
+}
+input[type='checkbox']{
+    position:absolute;
+    clip:rect(0,0,0,0);
+}
+input[type='checkbox']:focus + label:before{
+    box-shadow:0 0 .1em .1em #58a;
+}
+input[type='checkbox']:disabled + label:before{
+    background:gray;
+    box-shadow:none;
+    color:#555;
+}
+.lgh-switch-button{
+    position:absolute;
+    clip:rect(0,0,0,0);
+}
+.lgh-switch-button-label{
+    display:inline-block;
+    padding:.3em .5em;
+    background:#ccc;
+    background-image:linear-gradient(#ddd,#bbb);
+    border:1px solid rgba(0,0,0,.2);
+    border-radius: .3em;
+    box-shadow: 0 1px white inset;
+    text-align:center;
+    text-shadow:0 1px 1px white;
+    cursor: pointer;
+}
+.lgh-switch-button:checked + .lgh-switch-button-label,
+.lgh-switch-button:active + .lgh-switch-button-label{
+    box-shadow: .05em .1em .2em rgba(0,0,0,.6) inset;
+    border-color: rgba(0,0,0,.3);
+    background: #bbb;
+}
 
 
 
